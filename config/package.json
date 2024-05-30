@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "express": "^4.19.2",
+    "querystring": "^0.2.1",
+    "request": "^2.88.2"
+  },
+  "type": "module"
+}

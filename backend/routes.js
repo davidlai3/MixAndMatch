@@ -13,11 +13,10 @@ router.get('/success', async function(req, res) {
 		const top_artists = await getUserTopArtists(access_token);
 		const top_tracks = await getUserTopTracks(access_token);
 
+		// TODO: Update favorite track in db
 		await UserInfo.findOneAndUpdate({ 
 			id: user_info.id, 
-			display_name: user_info.display_name,
 			href: user_info.href,
-			favorite_track: "TODO"
 			},
 			{ $set: user_info },
 			{ upsert: true, new: true }
@@ -25,17 +24,15 @@ router.get('/success', async function(req, res) {
 
 		await TopArtists.findOneAndUpdate({ 
 			userId: user_info.id,
-			artists: top_artists,
 			},
-			{ $set: {artists: top_artists, userId: user_info.id} },
+			{ $set: {artists: top_artists} },
 			{ upsert: true, new: true }
 		);
 
 		await TopTracks.findOneAndUpdate({ 
 			userId: user_info.id,
-			tracks: top_tracks,
 			},
-			{ $set: {tracks: top_tracks, userId: user_info.id} },
+			{ $set: {tracks: top_tracks} },
 			{ upsert: true, new: true }
 		);
 
@@ -58,4 +55,4 @@ router.get('/success', async function(req, res) {
 
 });
 
-export { router };
+export { router }
