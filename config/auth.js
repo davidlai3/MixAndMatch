@@ -7,9 +7,9 @@ function generateRandomString(length) {
     return crypto.randomBytes(length).toString('hex').slice(0, length);
 }
 
-const client_id = "3fa16bdace6c45ffae8809ad3765c3c7";
-const client_secret = "110525f156924991853180263246be95";
-const redirect_uri = "http://localhost:3000/callback";
+const client_id = process.env.client_id;
+const client_secret = process.env.client_secret;
+const redirect_uri = "http://localhost:3001/callback";
 const stateKey = 'spotify_auth_state';
 const router = express.Router();
 
