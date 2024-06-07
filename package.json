@@ -1,0 +1,14 @@
+{
+	"name": "project directory",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+	"start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+	"start:frontend": "cd frontend && npm start",
+	"start:backend": "cd backend && node app.js"
+},
+	"dependencies": {
+	"concurrently": "^8.2.2"
+	}
+}

@@ -1,6 +1,5 @@
 import express from 'express';
-import { getUserTopArtists, getUserTopTracks, getUserInfo } from './server.js';
-import { UserInfo, TopArtists, TopTracks } from './models.js';
+import {getUserPlayLists } from './server.js';
 
 const router = express.Router();
 
@@ -9,50 +8,28 @@ router.get('/success', async function(req, res) {
 	const refresh_token = req.query.refresh_token;
 
 	try {
-		const user_info = await getUserInfo(access_token);
-		const top_artists = await getUserTopArtists(access_token);
-		const top_tracks = await getUserTopTracks(access_token);
+		const user_playlists = await getUserPlayLists(access_token);
+		console.log(user_playlists);
+		res.redirect('http://localhost:3000/search')
 
-		// TODO: Update favorite track in db
-		await UserInfo.findOneAndUpdate({ 
-			id: user_info.id, 
-			href: user_info.href,
-			},
-			{ $set: user_info },
-			{ upsert: true, new: true }
-		);
-
-		await TopArtists.findOneAndUpdate({ 
-			userId: user_info.id,
-			},
-			{ $set: {artists: top_artists} },
-			{ upsert: true, new: true }
-		);
-
-		await TopTracks.findOneAndUpdate({ 
-			userId: user_info.id,
-			},
-			{ $set: {tracks: top_tracks} },
-			{ upsert: true, new: true }
-		);
-
-		res.send({
-			message: "Authentication successful",
-			access_token: access_token,
-			refresh_token: refresh_token,
-			user_info: user_info,
-			top_artists: top_artists,
-			top_tracks: top_tracks
-		});
 	} catch (error) {
 		res.send({
-			message: "Authentication successful, but failed to fetch top artists",
+			message: "Authentication successful, but failed to playlists",
 			access_token: access_token,
 			refresh_token: refresh_token,
 			error: error.message
 		});
 	}
+});
 
+router.get('/api/data', (req, res) => {
+	const access_token = req.query.access_token;
+	try {
+		const user_playlists = getUserPlayLists(access_token);
+		res.json(user_playlists);
+	} catch (error) {
+		res.status(500).json({ message: "Failed to fetch playlists", error: error.message });
+	}
 });
 
 export { router }
