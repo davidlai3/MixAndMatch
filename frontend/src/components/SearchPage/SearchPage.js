@@ -3,15 +3,36 @@ import './SearchPage.css'
 import Dropdown from './Dropdown/Dropdown';
 import DropdownItem from './DropdownItem/DropdownItem';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
-const getAccessTokenFromUrl = () => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('access_token');
-};
 
 const SearchPage = () => {
 
-	const items = [1, 2, 3, 4]
+	const items = ['playlist1', 'playlist2', 'playlist3', 'playlist4'];
+
+	const queryParams = new URLSearchParams(useLocation().search);
+	const access_token = queryParams.get('access_token');
+	const refresh_token = queryParams.get('refresh_token');
+	console.log("Test: ")
+	console.log(axios.get('http://localhost:3001/api/data', {
+		params: { access_token, refresh_token }
+	}))
+
+	const [data, setData] = useState([]);
+
+	useEffect(() => {
+		// Fetch data from the backend
+		axios.get('http://localhost:3001/api/data', {
+			params: { access_token, refresh_token }
+		})
+		.then(response => {
+			setData(response.data)
+		})
+		.catch(error => {
+			console.error('There was an error fetching the data!', error);
+		});
+	}, [access_token, refresh_token]);
+
 
 	return (
 		<div className="searchpage">
@@ -21,9 +42,9 @@ const SearchPage = () => {
 					buttonText="Choose your playlist" 
 					content={
 					<>
-						{items.map((item, id) => (
-						<DropdownItem key={id}>
-							{item}
+						{data.map((item, id) => (
+						<DropdownItem key={id} href={item.href}>
+							{item.name}
 						</DropdownItem>
 						))}
 					</>

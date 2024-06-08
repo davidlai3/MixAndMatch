@@ -8,9 +8,7 @@ router.get('/success', async function(req, res) {
 	const refresh_token = req.query.refresh_token;
 
 	try {
-		const user_playlists = await getUserPlayLists(access_token);
-		console.log(user_playlists);
-		res.redirect('http://localhost:3000/search')
+		res.redirect(`http://localhost:3000/search?access_token=${access_token}&refresh_token=${refresh_token}`)
 
 	} catch (error) {
 		res.send({
@@ -22,11 +20,13 @@ router.get('/success', async function(req, res) {
 	}
 });
 
-router.get('/api/data', (req, res) => {
+router.get('/api/data', async (req, res) => {
 	const access_token = req.query.access_token;
+	const refresh_token = req.query.refresh_token;
+
 	try {
-		const user_playlists = getUserPlayLists(access_token);
-		res.json(user_playlists);
+		const playlists = await getUserPlayLists(access_token);
+		res.json(playlists);
 	} catch (error) {
 		res.status(500).json({ message: "Failed to fetch playlists", error: error.message });
 	}
